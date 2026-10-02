@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan } from 'typeorm';
+import { Repository, LessThan, MoreThan } from 'typeorm';
 import { Story } from './story.entity';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class StoriesService {
   async createStory(userId: number, mediaId: number, caption?: string) {
     const createdAt = new Date();
     const expiresAt = new Date();
-    expiresAt.setHours(createdAt.getHours() + 24); // 24 hour expiry
+    expiresAt.setHours(createdAt.getHours() + 24);
 
     const story = this.storyRepository.create({
       user: { id: userId } as any,
@@ -28,7 +28,7 @@ export class StoriesService {
   async getActiveStories() {
     return await this.storyRepository.find({
       where: {
-        expiresAt: MoreThan(new Date()), // Only fetch stories that haven't expired
+        expiresAt: MoreThan(new Date()),
       },
       relations: ['user'],
       order: { createdAt: 'ASC' },
